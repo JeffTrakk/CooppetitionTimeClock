@@ -160,10 +160,12 @@ export function buildSeed(now = new Date()): Store {
       const outside = userId === "u-aisha" && offset === -3;
       const forgotOut = userId === "u-ravi" && offset === -6;
 
+      // Lunch always meets the 30-minute minimum, so only Ravi's skipped lunch is flagged.
+      const lunch = jitter();
       const day = [
         mk("in", at("07:00", jitter()), outside ? { withinGeofence: false, distanceM: 640 } : {}),
-        skipLunch ? null : mk("break_start", at("12:00", jitter())),
-        skipLunch ? null : mk("break_end", at("12:30", jitter())),
+        skipLunch ? null : mk("break_start", at("12:00", lunch)),
+        skipLunch ? null : mk("break_end", at("12:30", lunch + Math.floor(rand() * 5))),
         forgotOut ? null : mk("out", outAt, offline ? { offline: true, receivedAt: at("17:45", 0) } : {}),
       ];
       for (const p of day) if (p) punches.push(p);
