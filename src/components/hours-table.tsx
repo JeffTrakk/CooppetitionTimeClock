@@ -34,7 +34,7 @@ export function HoursTable({ report, jobs, timezone, detailed = true }: { report
               <tr key={d.date}>
                 <td className="whitespace-nowrap font-medium">
                   {formatDate(d.date)}
-                  {!d.breakCompliant && <div><Badge tone="red">break missed</Badge></div>}
+                  {!d.breakCompliant && <div><Badge tone="red">{d.breakMinutes > 0 ? "short break" : "break missed"}</Badge></div>}
                 </td>
                 {detailed && (
                   <td className="space-y-1">

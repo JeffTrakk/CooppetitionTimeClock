@@ -1,3 +1,4 @@
+import { lock } from "@/app/actions/access";
 import { demoSignIn } from "@/app/actions/auth";
 import { repo } from "@/lib/data";
 import { ROLE_LABELS, type Role } from "@/lib/domain/types";
@@ -46,6 +47,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           </div>
         </section>
       ))}
+
+      {process.env.ACCESS_EMAIL && (
+        <form action={lock} className="mt-10 text-center">
+          <button className="text-sm font-semibold text-stone-500 underline">Sign out of the demo environment</button>
+        </form>
+      )}
     </main>
   );
 }
