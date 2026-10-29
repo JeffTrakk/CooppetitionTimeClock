@@ -19,7 +19,7 @@ scaffolded, and the steps to connect each service.
 | CSV payroll export | **Built.** Works with any payroll service. |
 | Database schema, RLS, storage, realtime | **Written and tested** on Postgres 16. Not attached to a Supabase project. |
 | Supabase data adapter (`SupabaseRepository`) | **Stub.** Every method throws `NotConnectedError` with the query it needs. |
-| Sign-in (Supabase Auth) | **Stub.** Demo mode: pick a user on `/login`. |
+| Sign-in (Supabase Auth) | **Stub.** Hosted demo: one admin email + password (`ACCESS_EMAIL` / `ACCESS_PASSWORD`) guards the whole site, then you pick a sample person on `/login`. |
 | QuickBooks, Wagepoint, Dayforce, ADP | **Scaffolded.** Interface, env var names and a payload preview. No network calls. |
 | SMS, email, push | **Scaffolded.** Deliveries are logged as `not_connected`. |
 | Webhooks, cron jobs, Edge Functions | **Scaffolded.** Routes exist and return 501 / `not_connected`. |
@@ -241,6 +241,23 @@ Vercel plan, which is why the file isn't committed yet:
 8. Set `DATA_BACKEND=supabase`.
 9. Optional: swap `AutoRefresh` for Realtime subscriptions on `punches` and
    `message_deliveries`.
+
+## Hosted demo environment
+
+Vercel project `cooppetition-timeclock` (team "Jeff's Projects") deploys
+`main` automatically. Until Supabase is connected:
+
+- `src/middleware.ts` sends every request to `/access` until the visitor
+  enters `ACCESS_EMAIL` and `ACCESS_PASSWORD` (Vercel env vars). The
+  deployed site refuses to serve if either is missing. Cron and webhook
+  routes skip the gate because they carry their own auth.
+- Data lives in server memory and resets when Vercel recycles the
+  instance. Treat it as a walkthrough, not a system of record.
+- To rotate the password, change `ACCESS_PASSWORD` in Vercel and redeploy.
+  Everyone is signed out.
+
+When Supabase Auth goes live, delete `src/lib/auth/access-gate.ts`, the
+gate in `src/middleware.ts` and `src/app/access/`.
 
 ## Testing
 
